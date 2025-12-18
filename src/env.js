@@ -12,6 +12,8 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     SIGNATURE_SECRET: z.string(),
+    TREASURY_ADDRESS: z.string(),
+    PRIVATE_KEY: z.string(),
   },
 
   /**
@@ -31,6 +33,8 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     SIGNATURE_SECRET: process.env.SIGNATURE_SECRET,
+    TREASURY_ADDRESS: process.env.TREASURY_ADDRESS,
+    PRIVATE_KEY: process.env.PRIVATE_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
