@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
   const wallet = new ethers.Wallet(env.PRIVATE_KEY, provider);
 
-  const amount = ethers.parseUnits("1", 18);
+  const amount = ethers.parseUnits(body.amount, 18);
 
   const usdt = new ethers.Contract(USDT_BSC, ERC20_ABI, wallet);
 
