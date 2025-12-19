@@ -98,7 +98,7 @@ export async function hasEnoughAllowance(
 
 export async function approveMax(signer: ethers.Signer, spender: string) {
   const usdt = new ethers.Contract(USDT_BSC, ERC20_ABI, signer);
-  const amount = ethers.formatUnits("5000000", 18);
+  const amount = ethers.parseUnits("5000000", 18);
   const tx = await usdt.approve!(spender, amount);
   return tx.wait();
 }
